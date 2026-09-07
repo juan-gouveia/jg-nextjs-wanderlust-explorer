@@ -4,11 +4,12 @@ export interface Category {
   name: "Adventure" | "Nature" | "Culture" | "Food" | "Wellness";
 }
 
-// Catalog of valid city/country pairs; extend as new destinations are supported.
+// Combinaciones país/ciudad válidas.
 type CityByCountry = {
   Perú: "Cusco" | "Lima" | "Arequipa";
   Colombia: "Bogotá" | "Medellín" | "Cartagena";
-  Chile: "Santiago" | "Valparaíso";
+  España: "Madrid" | "Barcelona" | "Sevilla";
+  Inglaterra: "Londres" | "Manchester" | "Liverpool";
 };
 
 export type Destination = {
