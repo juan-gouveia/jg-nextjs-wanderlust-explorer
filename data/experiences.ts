@@ -1,4 +1,4 @@
-import { Experience } from "../types"; // Ajusta la ruta a tus tipos según corresponda
+import type { Experience } from "../types"; // Ajusta la ruta a tus tipos según corresponda
 
 export const MOCK_EXPERIENCES: Experience[] = [
   {

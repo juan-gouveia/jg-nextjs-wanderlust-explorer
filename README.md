@@ -13,6 +13,10 @@ Plataforma para descubrir y guardar experiencias únicas alrededor del mundo: de
   + Navbar
 - Hooks integrados y al menos *un hook personalizado*
 
+## Referencias de diseño
+
+- /design-references/civitatis-mobile-experience-cards.jpg
+
 ## ¿Qué necesitamos?
 
 ### / (Home/Inicio)
@@ -27,11 +31,11 @@ Plataforma para descubrir y guardar experiencias únicas alrededor del mundo: de
     * Al cargar página con query params existentes en la URL, inputs respectivos debe prerellenarse con los valores
 - Sección hero con botón "Muéstrame las experiencias" que revela /experiences
 
+
+
+### Stop
+
 + /experiences
 + /experiences/[id]
 + /favorites
 + /profile
-
-## Referencias de diseño
-
-- /design-references/civitatis-mobile-experience-cards.jpg
