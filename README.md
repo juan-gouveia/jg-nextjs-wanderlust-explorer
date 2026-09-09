@@ -34,3 +34,4 @@ Plataforma para descubrir y guardar experiencias únicas alrededor del mundo: de
 
 ## Referencias de diseño
 
+- /design-references/civitatis-mobile-experience-cards.jpg
