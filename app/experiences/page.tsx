@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import ExperienceCard from "../../components/ExperienceCard";
 import { MOCK_EXPERIENCES } from "../../data/experiences";
 import type { Experience } from "../../types";
@@ -22,8 +23,21 @@ function useExperiences() {
 }
 
 export default function ExperiencesPage() {
+  const searchParams = useSearchParams();
+  const search = searchParams.get("search")?.toLowerCase().trim() ?? "";
+
   const { experiences, isLoading } = useExperiences();
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
+
+  const filteredExperiences = experiences.filter((experience) => {
+    if (!search) {
+      return true;
+    }
+
+    return new RegExp(search, "i").test(
+      `${experience.name} ${experience.description}`
+    );
+  });
 
   function toggleFavorite(id: string) {
     setFavoriteIds((currentFavorites) => {
@@ -45,8 +59,11 @@ export default function ExperiencesPage() {
         <h1 className="text-3xl font-black tracking-tight text-slate-900">
           Todas las experiencias
         </h1>
+
         <p className="mt-2 text-slate-600">
-          Descubre experiencias únicas alrededor del mundo.
+          {search
+            ? `Resultados para: "${search}"`
+            : "Descubre experiencias únicas alrededor del mundo."}
         </p>
       </header>
 
@@ -56,7 +73,7 @@ export default function ExperiencesPage() {
         </p>
       ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-          {experiences.map((experience) => (
+          {filteredExperiences.map((experience) => (
             <ExperienceCard
               key={experience.id}
               experience={experience}
