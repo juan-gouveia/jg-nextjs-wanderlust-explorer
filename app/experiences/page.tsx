@@ -1,0 +1,86 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import ExperienceCard from "../../components/ExperienceCard";
+import FilterBar from "../../components/FilterBar";
+import { MOCK_EXPERIENCES } from "../../data/experiences";
+import useFavorites from "../../hooks/useFavorites";
+import type { Experience } from "../../types";
+
+function useExperiences() {
+  const [experiences, setExperiences] = useState<Experience[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setExperiences(MOCK_EXPERIENCES);
+      setIsLoading(false);
+    }, 300);
+
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  return { experiences, isLoading };
+}
+
+export default function ExperiencesPage() {
+  const searchParams = useSearchParams();
+  const search = searchParams.get("search")?.toLowerCase().trim() ?? "";
+  const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const category = searchParams.get("category") ?? "";
+  const country = searchParams.get("country") ?? "";
+  const city = searchParams.get("city") ?? "";
+
+  const { experiences, isLoading } = useExperiences();
+  const { favoriteIds, toggleFavorite } = useFavorites();
+
+  const filteredExperiences = experiences.filter((experience) => {
+    const matchesSearch =
+      !search || new RegExp(escapedSearch, "i").test(experience.name);
+    const matchesCategory = !category || experience.category.name === category;
+    const matchesCountry = !country || experience.destination.country === country;
+    const matchesCity = !city || experience.destination.city === city;
+
+    return matchesSearch && matchesCategory && matchesCountry && matchesCity;
+  });
+
+  return (
+    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      <header className="mb-8">
+        <h1 className="text-3xl font-black tracking-tight text-slate-900">
+          Todas las experiencias
+        </h1>
+
+        <p className="mt-2 text-slate-600">
+          {search
+            ? `Resultados para: "${search}"`
+            : "Descubre experiencias únicas alrededor del mundo."}
+        </p>
+      </header>
+
+      <FilterBar />
+
+      {isLoading ? (
+        <p className="py-12 text-center text-lg font-semibold text-slate-600">
+          Cargando...
+        </p>
+      ) : filteredExperiences.length === 0 ? (
+        <p className="py-12 text-center text-lg font-semibold text-slate-600">
+          No se encontraron coincidencias
+        </p>
+      ) : (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+          {filteredExperiences.map((experience) => (
+            <ExperienceCard
+              key={experience.id}
+              experience={experience}
+              isFavorite={favoriteIds.has(experience.id)}
+              onToggleFavorite={() => toggleFavorite(experience.id)}
+            />
+          ))}
+        </div>
+      )}
+    </main>
+  );
+}
