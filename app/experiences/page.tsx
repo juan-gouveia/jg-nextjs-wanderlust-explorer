@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import ExperienceCard from "../../components/ExperienceCard";
 import FilterBar from "../../components/FilterBar";
 import { MOCK_EXPERIENCES } from "../../data/experiences";
+import useFavorites from "../../hooks/useFavorites";
 import type { Experience } from "../../types";
 
 function useExperiences() {
@@ -32,7 +33,7 @@ export default function ExperiencesPage() {
   const city = searchParams.get("city") ?? "";
 
   const { experiences, isLoading } = useExperiences();
-  const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
+  const { favoriteIds, toggleFavorite } = useFavorites();
 
   const filteredExperiences = experiences.filter((experience) => {
     const matchesSearch =
@@ -43,20 +44,6 @@ export default function ExperiencesPage() {
 
     return matchesSearch && matchesCategory && matchesCountry && matchesCity;
   });
-
-  function toggleFavorite(id: string) {
-    setFavoriteIds((currentFavorites) => {
-      const nextFavorites = new Set(currentFavorites);
-
-      if (nextFavorites.has(id)) {
-        nextFavorites.delete(id);
-      } else {
-        nextFavorites.add(id);
-      }
-
-      return nextFavorites;
-    });
-  }
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
