@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import ExperienceCard from "../../components/ExperienceCard";
+import FilterBar from "../../components/FilterBar";
 import { MOCK_EXPERIENCES } from "../../data/experiences";
 import type { Experience } from "../../types";
 
@@ -26,16 +27,21 @@ export default function ExperiencesPage() {
   const searchParams = useSearchParams();
   const search = searchParams.get("search")?.toLowerCase().trim() ?? "";
   const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const category = searchParams.get("category") ?? "";
+  const country = searchParams.get("country") ?? "";
+  const city = searchParams.get("city") ?? "";
 
   const { experiences, isLoading } = useExperiences();
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
 
   const filteredExperiences = experiences.filter((experience) => {
-    if (!search) {
-      return true;
-    }
+    const matchesSearch =
+      !search || new RegExp(escapedSearch, "i").test(experience.name);
+    const matchesCategory = !category || experience.category.name === category;
+    const matchesCountry = !country || experience.destination.country === country;
+    const matchesCity = !city || experience.destination.city === city;
 
-    return new RegExp(escapedSearch, "i").test(experience.name);
+    return matchesSearch && matchesCategory && matchesCountry && matchesCity;
   });
 
   function toggleFavorite(id: string) {
@@ -65,6 +71,8 @@ export default function ExperiencesPage() {
             : "Descubre experiencias únicas alrededor del mundo."}
         </p>
       </header>
+
+      <FilterBar />
 
       {isLoading ? (
         <p className="py-12 text-center text-lg font-semibold text-slate-600">
