@@ -25,6 +25,7 @@ function useExperiences() {
 export default function ExperiencesPage() {
   const searchParams = useSearchParams();
   const search = searchParams.get("search")?.toLowerCase().trim() ?? "";
+  const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
   const { experiences, isLoading } = useExperiences();
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
@@ -34,9 +35,7 @@ export default function ExperiencesPage() {
       return true;
     }
 
-    return new RegExp(search, "i").test(
-      `${experience.name} ${experience.description}`
-    );
+    return new RegExp(escapedSearch, "i").test(experience.name);
   });
 
   function toggleFavorite(id: string) {
@@ -70,6 +69,10 @@ export default function ExperiencesPage() {
       {isLoading ? (
         <p className="py-12 text-center text-lg font-semibold text-slate-600">
           Cargando...
+        </p>
+      ) : filteredExperiences.length === 0 ? (
+        <p className="py-12 text-center text-lg font-semibold text-slate-600">
+          No se encontraron coincidencias
         </p>
       ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
